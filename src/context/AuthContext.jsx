@@ -1,0 +1,47 @@
+import { createContext, useState, useEffect, useContext } from "react";
+import { api } from "../api/axios";
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+
+  const fetchUser = async () => {
+    try {
+      const { data } = await api.post('/api/auth/me');
+      setUser(data);
+    } catch (error) {
+      setUser(null);
+    }
+  };
+
+  const login = async (email, password) => {
+    try {
+      const { data } = await api.post('/api/auth/login',  {email, password});
+      document.cookie = `token=${data.access_token}; max-age=${data.expires_in}; path=/`;
+      window.location.reload();
+      await fetchUser();
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
+  const logout = async () => {
+    await api.post('/api/auth/logout');
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+    window.location.reload();
+    setUser(null);
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);

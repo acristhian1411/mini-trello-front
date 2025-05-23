@@ -4,6 +4,7 @@ import Form from "./Form";
 import MidModal from "../../Components/Modal";
 import PaginationControls from "@/Components/PaginationControls";
 import AlertMessage from "@/Components/Alert";
+import SearchIcon from "@mui/icons-material/Search";
 import { 
     Button,
     Table,
@@ -12,6 +13,10 @@ import {
     TableContainer,
     TableHead,
     TableRow,
+    TableSortLabel,
+    TextField, 
+    InputAdornment, 
+    IconButton,
     Paper,
  } from "@mui/material";
 export default function Boards() {
@@ -23,20 +28,31 @@ export default function Boards() {
     const [currentPage, setCurrentPage] = useState(1);
     const [lastPage, setLastPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
-    const fetchBoards = async (perPage, page) => {
-        const response = await api.get('/api/boards?wantsJson=true&per_page=' + perPage + '&page=' + page);
+    const [orderBy, setOrderBy] = useState("name");
+    const [order, setOrder] = useState("asc");
+    const [search, setSearch] = useState("");
+
+    const handleSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+    fetchBoards(rowsPerPage, currentPage, orderBy, order);
+    };
+    const fetchBoards = async (perPage, page, orderBy = "name", order = "asc", search = "") => {
+        let url = '/api/boards?wantsJson=true&per_page=' + perPage + '&page=' + page + '&sort_by=' + orderBy + '&order=' + order + ( search ? '&name=' + search : '');
+        const response = await api.get(url);
         setCurrentPage(response.data.current_page);
         setLastPage(response.data.last_page);
         setBoards(response.data.data);
     };
     useEffect(() => {
-        fetchBoards(rowsPerPage, currentPage);
-    }, []);
+        fetchBoards(rowsPerPage, currentPage, orderBy, order);
+    }, [rowsPerPage,currentPage,orderBy,order]);
 
 
     const close = () => {
         setOpenModal(false);
-        fetchBoards();
+        fetchBoards(rowsPerPage, currentPage, orderBy, order);
     };
     const openModalForm = (board, edit) => {
         setBoard(board);
@@ -59,15 +75,72 @@ export default function Boards() {
     return (
         <div>
             <h1>Boards</h1>
+            <div sx={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px"}}>
+                <TextField
+                    label="Search"
+                    variant="outlined"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            fetchBoards(rowsPerPage, currentPage, orderBy, order, search);
+                        }
+                    }}
+                    sx={{ marginBottom: "16px", width: "300px" }}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                    onClick={() => fetchBoards(rowsPerPage, currentPage, orderBy, order, search)}
+                                >
+                                    <SearchIcon />
+                                </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
+            </div>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell align="center">#</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell align="right">Description</TableCell>
-                            <TableCell align="right">Created At</TableCell>
-                            <TableCell align="right">Updated At</TableCell>
+                            <TableCell>
+                                <TableSortLabel
+                                    active={orderBy === "name"}
+                                    direction={orderBy === "name" ? order : "asc"}
+                                    onClick={() => handleSort("name")}
+                                >
+                                    Name
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell align="right">
+                                <TableSortLabel
+                                    active={orderBy === "description"}
+                                    direction={orderBy === "description" ? order : "asc"}
+                                    onClick={() => handleSort("description")}
+                                >
+                                    Description
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell align="right">
+                                <TableSortLabel
+                                    active={orderBy === "created_at"}
+                                    direction={orderBy === "created_at" ? order : "asc"}
+                                    onClick={() => handleSort("created_at")}
+                                >
+                                    Created At
+                                </TableSortLabel>
+                            </TableCell>
+                            <TableCell align="right">
+                                <TableSortLabel
+                                    active={orderBy === "updated_at"}
+                                    direction={orderBy === "updated_at" ? order : "asc"}
+                                    onClick={() => handleSort("updated_at")}
+                                >
+                                    Updated At
+                                </TableSortLabel>
+                            </TableCell>
                             <TableCell colSpan={2} align="right">
                                 <Button variant="contained" color="primary" onClick={() => openModalForm(null, false)}>Create Board</Button>
                             </TableCell>

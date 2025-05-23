@@ -1,6 +1,6 @@
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
-import LockIcon from '@mui/icons-material/Lock';
+import TableChartIcon from '@mui/icons-material/TableChart';
 export const sidebarRoutes = [
     { 
         groupname: 'General',
@@ -12,9 +12,9 @@ export const sidebarRoutes = [
                 icon: HomeIcon,
             },
             {
-                path: '/login',
-                name: 'Login',
-                icon: LockIcon,
+                path: '/boards',
+                name: 'Boards',
+                icon: TableChartIcon,
             },
         ]
     },

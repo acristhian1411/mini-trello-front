@@ -5,7 +5,7 @@ import Login from '@/pages/User/Login';
 import Profile from '@/pages/User/Profile';
 import Dashboard from '@/pages/Home/Dashboard';
 import NotFound from '@/pages/Errors/NotFound';
-
+import Boards from '@/pages/Boards/Index';
 export default function AppRoutes() {
     return (
         <Router>
@@ -15,6 +15,7 @@ export default function AppRoutes() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Dashboard />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/boards" element={<Boards />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
             </Routes>

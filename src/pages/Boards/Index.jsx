@@ -5,6 +5,7 @@ import MidModal from "../../Components/Modal";
 import PaginationControls from "@/Components/PaginationControls";
 import AlertMessage from "@/Components/Alert";
 import SearchIcon from "@mui/icons-material/Search";
+import DeleteDialog from "@/Components/DeleteDialog";
 import { 
     Button,
     Table,
@@ -31,6 +32,12 @@ export default function Boards() {
     const [orderBy, setOrderBy] = useState("name");
     const [order, setOrder] = useState("asc");
     const [search, setSearch] = useState("");
+    const [openDelete, setOpenDelete] = useState(false);
+
+    const handleOpenDelete = (item) => {
+        setBoard(item);
+        setOpenDelete(true);
+      };
 
     const handleSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -72,6 +79,16 @@ export default function Boards() {
         setCurrentPage(1);
         fetchBoards(rows, 1);
     };
+    const handleDelete = async () => {
+        try {
+          await api.delete(`/api/boards/${board.id}?wantsJson=true`);
+          showAlert("Board deleted successfully", "success");
+          setOpenDelete(false);
+          fetchBoards(rowsPerPage, currentPage, orderBy, order);
+        } catch (err) {
+          showAlert("Error deleting board", "error");
+        }
+      };
     return (
         <div>
             <h1>Boards</h1>
@@ -163,7 +180,7 @@ export default function Boards() {
                                     <Button variant="contained" color="warning" onClick={() => openModalForm(board, true)}>Edit</Button>
                                 </TableCell>
                                 <TableCell align="right">
-                                    <Button variant="contained" color="error">Delete</Button>
+                                    <Button variant="contained" color="error" onClick={() => handleOpenDelete(board)}>Delete</Button>
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -195,6 +212,13 @@ export default function Boards() {
                     />
                 )
             }
+            <DeleteDialog
+                open={openDelete}
+                onClose={() => setOpenDelete(false)}
+                onConfirm={handleDelete}
+                title="Delete Board"
+                message="Are you sure you want to delete this board?"
+            />
         </div>
     );
 }

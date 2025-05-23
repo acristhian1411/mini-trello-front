@@ -1,18 +1,36 @@
-import React from "react";
-import { Drawer, Toolbar, Divider, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import {
+    List,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Collapse,
+    Divider,
+    Typography,
+    Drawer,
+    Toolbar,
+  } from '@mui/material';
+  import ExpandLess from '@mui/icons-material/ExpandLess';
+  import ExpandMore from '@mui/icons-material/ExpandMore';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { sidebarRoutes } from '@/Utils/SidebarRoutes';
 export default function Sidebar({ open, handleDrawerToggle }) {
     const drawerWidth = 240;
     const navigate = useNavigate();
-    const routes = [
-        { path: '/', name: 'Dashboard' },
-        { path: '/profile', name: 'Profile' },
-    ];
+    const location = useLocation();
+    const routes = sidebarRoutes;
+    const [openGroups, setOpenGroups] = useState({});
+    const isRouteActive = (path) => location.pathname === path;
+
     const goTo = (path) => {
       navigate(path);
     };
+    const toggleGroup = (groupName) => {
+        setOpenGroups((prev) => ({
+          ...prev,
+          [groupName]: !prev[groupName],
+        }));
+      };
     return (
         <Drawer
         variant="permanent"
@@ -30,18 +48,38 @@ export default function Sidebar({ open, handleDrawerToggle }) {
         <Toolbar />
         <Divider />
         <List>
-          {routes.map((route, index) => (
-            <ListItem button key={route.name}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              {open && <ListItemText 
-                            primary={route.name} 
-                            onClick={() => goTo(route.path)}
-                        />}
-            </ListItem>
-          ))}
-        </List>
+      {routes.map((group, index) => (
+        <div key={group.groupname}>
+          <ListItemButton onClick={() => toggleGroup(group.groupname)}>
+            <ListItemIcon>{<group.groupicon />}</ListItemIcon>
+            {open && (
+              <>
+                <ListItemText primary={group.groupname} />
+                {openGroups[group.groupname] ? <ExpandLess /> : <ExpandMore />}
+              </>
+            )}
+          </ListItemButton>
+
+          <Collapse in={openGroups[group.groupname]} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {group.routes.map((route) => (
+                <ListItemButton
+                  key={route.name}
+                  sx={{ pl: 4 }}
+                  selected={isRouteActive(route.path)}
+                  onClick={() => navigate(route.path)}
+                >
+                  <ListItemIcon>{<route.icon />}</ListItemIcon>
+                  {open && <ListItemText primary={route.name} />}
+                </ListItemButton>
+              ))}
+            </List>
+          </Collapse>
+
+          <Divider />
+        </div>
+      ))}
+    </List>
       </Drawer>
     );
 }

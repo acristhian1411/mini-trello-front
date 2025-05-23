@@ -10,6 +10,18 @@ import {
   Grid,
 } from "@mui/material";
 
+/**
+ * A component that displays pagination controls, allowing the user to
+ * navigate through the pages and to change the number of rows per page.
+ *
+ * @param {Object} props The component props.
+ * @param {number} props.currentPage The current page number.
+ * @param {number} props.totalPages The total number of pages.
+ * @param {function} props.onChange Called when the user changes the page.
+ * @param {number} props.rowsPerPage The number of rows per page.
+ * @param {function} props.onRowsPerPageChange Called when the user changes
+ *   the number of rows per page.
+ */
 export default function PaginationControls({
   currentPage,
   totalPages,

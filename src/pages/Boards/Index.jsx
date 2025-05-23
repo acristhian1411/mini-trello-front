@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import {api} from "../../api/axios";
 import Form from "./Form";
 import MidModal from "../../Components/Modal";
-import PaginationControls from "@/Components/PaginationControls";
-import AlertMessage from "@/Components/Alert";
+import PaginationControls from "../../Components/PaginationControls";
+import AlertMessage from "../../Components/Alert";
 import SearchIcon from "@mui/icons-material/Search";
-import DeleteDialog from "@/Components/DeleteDialog";
+import DeleteDialog from "../../Components/DeleteDialog";
 import { 
     Button,
     Table,
@@ -20,6 +20,11 @@ import {
     IconButton,
     Paper,
  } from "@mui/material";
+/**
+ * A component that displays a list of boards with functionalities to 
+ * create, edit, delete, and search boards. It also includes pagination 
+ * controls and sorting capabilities for the displayed data.
+ */
 export default function Boards() {
     const [boards, setBoards] = useState([]);
     const [board, setBoard] = useState(null);
@@ -34,17 +39,6 @@ export default function Boards() {
     const [search, setSearch] = useState("");
     const [openDelete, setOpenDelete] = useState(false);
 
-    const handleOpenDelete = (item) => {
-        setBoard(item);
-        setOpenDelete(true);
-      };
-
-    const handleSort = (property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-    fetchBoards(rowsPerPage, currentPage, orderBy, order);
-    };
     const fetchBoards = async (perPage, page, orderBy = "name", order = "asc", search = "") => {
         let url = '/api/boards?wantsJson=true&per_page=' + perPage + '&page=' + page + '&sort_by=' + orderBy + '&order=' + order + ( search ? '&name=' + search : '');
         const response = await api.get(url);
@@ -52,32 +46,48 @@ export default function Boards() {
         setLastPage(response.data.last_page);
         setBoards(response.data.data);
     };
+    
     useEffect(() => {
         fetchBoards(rowsPerPage, currentPage, orderBy, order);
     }, [rowsPerPage,currentPage,orderBy,order]);
 
-
-    const close = () => {
+    const handleOpenDelete = (item) => {
+        setBoard(item);
+        setOpenDelete(true);
+    };
+    
+    const closeModal = () => {
         setOpenModal(false);
         fetchBoards(rowsPerPage, currentPage, orderBy, order);
     };
+
     const openModalForm = (board, edit) => {
         setBoard(board);
         setEdit(edit);
         setOpenModal(true);
     };
+
     const showAlert = (message, severity) => {
         setAlert({ message, severity });
         setTimeout(() => setAlert(null), 3000);
     };
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
         fetchBoards(rowsPerPage, page);
     };
+
     const handleRowsPerPageChange = async (rows) => {
         setRowsPerPage(rows);
         setCurrentPage(1);
         fetchBoards(rows, 1);
+    };
+
+    const handleSort = (property) => {
+        const isAsc = orderBy === property && order === "asc";
+        setOrder(isAsc ? "desc" : "asc");
+        setOrderBy(property);
+        fetchBoards(rowsPerPage, currentPage, orderBy, order);
     };
     const handleDelete = async () => {
         try {
@@ -88,7 +98,8 @@ export default function Boards() {
         } catch (err) {
           showAlert("Error deleting board", "error");
         }
-      };
+    };
+
     return (
         <div>
             <h1>Boards</h1>
@@ -195,14 +206,16 @@ export default function Boards() {
                 onChange={handlePageChange}
                 onRowsPerPageChange={handleRowsPerPageChange}
             />
-            <MidModal open={openModal} onClose={close}>
+            {/* Modal con formulario de creación o edición */}
+            <MidModal open={openModal} onClose={closeModal}>
                 <Form 
-                    onClose={close} 
+                    onClose={closeModal} 
                     edit={edit} 
                     board={board}
                     showAlert={showAlert}
                 />
             </MidModal>
+            {/* Alerta de confirmación de acciones (creación, edición, eliminación) */}
             {alert != null && (
                     <AlertMessage 
                         message={alert.message} 
@@ -212,6 +225,7 @@ export default function Boards() {
                     />
                 )
             }
+            {/* Modal de confirmación de eliminación */}
             <DeleteDialog
                 open={openDelete}
                 onClose={() => setOpenDelete(false)}

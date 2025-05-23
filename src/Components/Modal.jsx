@@ -8,6 +8,15 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
+/**
+ * A modal component that is centered in the middle of the screen.
+ *
+ * @param {boolean} open - Whether the modal is open.
+ * @param {function} onClose - Function to be called when the modal is closed.
+ * @param {ReactNode} children - The content of the modal.
+ *
+ * @returns {ReactElement} A `Modal` component.
+ */
 export default function MidModal({ children, open, onClose }) {
   return (
     <Modal

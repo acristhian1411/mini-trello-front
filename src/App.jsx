@@ -7,6 +7,7 @@ import { getTokenFromCookie } from './api/axios';
 import Layout from '@/Components/Layout';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline, useMediaQuery } from '@mui/material';
+import AppRoutes from './Routes';
 
 function App() {
   const [token, setToken] = useState(getTokenFromCookie());
@@ -35,10 +36,7 @@ function App() {
       )}
       {token && (
         <AuthProvider>
-          {console.log('prefenrecia del navegador: ',prefersDarkMode)}
-          <Layout darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)}>
-            <Profile />
-          </Layout >
+          <AppRoutes />
         </AuthProvider>
       )}
     </ThemeProvider>

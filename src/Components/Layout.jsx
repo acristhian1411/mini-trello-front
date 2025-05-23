@@ -22,7 +22,8 @@ import {
   Brightness4,
   Brightness7,
 } from '@mui/icons-material';
-
+import {Outlet} from 'react-router-dom'
+import Sidebar from './Sidebar';
 const drawerWidth = 240;
 
 export default function Layout({ darkMode, toggleDarkMode, children }) {
@@ -68,32 +69,10 @@ export default function Layout({ darkMode, toggleDarkMode, children }) {
       </AppBar>
 
       {/* Drawer */}
-      <Drawer
-        variant="permanent"
+      <Sidebar 
         open={open}
-        sx={{
-          width: open ? drawerWidth : 60,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: open ? drawerWidth : 60,
-            transition: 'width 0.3s',
-            overflowX: 'hidden',
-          },
-        }}
-      >
-        <Toolbar />
-        <Divider />
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              {open && <ListItemText primary={text} />}
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
+        handleDrawerToggle={handleDrawerToggle}
+      />
 
       {/* Main */}
       <Box
@@ -105,7 +84,7 @@ export default function Layout({ darkMode, toggleDarkMode, children }) {
         }}
       >
         <Toolbar />
-        {children}
+        <Outlet/>
       </Box>
     </Box>
   );

@@ -2,6 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { generateFormTemplate } from './formTemplate.js';
 
 function capitalize(val) {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
@@ -65,7 +66,7 @@ export default function ${capitalize(modelName)}() {
   const [openDelete, setOpenDelete] = useState(false);
 
   const fetchItems = async (perPage, page, orderBy = "${fields[0] || 'name'}", order = "asc", search = "") => {
-    let url = '/api/${modelName}?wantsJson=true&per_page=' + perPage + '&page=' + page + '&sort_by=' + orderBy + '&order=' + order + ( search ? '&search=' + search : '');
+    let url = '/api/${modelName.toLowerCase()}?wantsJson=true&per_page=' + perPage + '&page=' + page + '&sort_by=' + orderBy + '&order=' + order + ( search ? '&search=' + search : '');
     const response = await api.get(url);
     setCurrentPage(response.data.current_page);
     setLastPage(response.data.last_page);
@@ -117,7 +118,7 @@ export default function ${capitalize(modelName)}() {
 
   const handleDelete = async () => {
     try {
-      await api.delete(\`/api/${modelName}/\${item.id}?wantsJson=true\`);
+      await api.delete(\`/api/${modelName.toLowerCase()}/\${item.id}?wantsJson=true\`);
       showAlert("${capitalize(modelName)} deleted successfully", "success");
       setOpenDelete(false);
       fetchItems(rowsPerPage, currentPage, orderBy, order);
@@ -217,10 +218,6 @@ export default function ${capitalize(modelName)}() {
     </div>
   );
 }
-
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
 `;
 
 (async () => {
@@ -231,12 +228,52 @@ function capitalize(str) {
   fs.writeFileSync(path.join(targetDir, 'Index.jsx'), generateIndexContent(name, fields));
 
   if (flags.form) {
-    fs.writeFileSync(path.join(targetDir, 'Form.jsx'), `export default function Form() { return <div>Form</div>; }`);
+    fs.writeFileSync(
+      path.join(targetDir, 'Form.jsx'),
+      generateFormTemplate(name, fields)
+    );
   }
-
+ 
   if (flags.show) {
     fs.writeFileSync(path.join(targetDir, 'Show.jsx'), `export default function Show() { return <div>Show</div>; }`);
   }
 
+  // === Agregar ruta al Sidebar ===
+  const sidebarPath = path.join(__dirname, 'src', 'Utils', 'SidebarRoutes.js');
+  let sidebarContent = fs.readFileSync(sidebarPath, 'utf8');
+  const sidebarInsertRegex = /(routes:\[\s*\n)((?:\s*{[^}]+},?\s*\n)*)(\s*\])/;
+
+  const newSidebarEntry = `            {
+                path: '/${name.toLowerCase()}',
+                name: '${capitalize(name)}',
+                icon: TableChartIcon,
+            },\n`;
+
+  sidebarContent = sidebarContent.replace(sidebarInsertRegex, (_, before, routes, after) => {
+    return before + routes + newSidebarEntry + after;
+  });
+
+  fs.writeFileSync(sidebarPath, sidebarContent);
+
+  // === Agregar ruta al archivo Routes.jsx ===
+  const routesPath = path.join(__dirname, 'src', 'Routes.jsx');
+  let routesContent = fs.readFileSync(routesPath, 'utf8');
+
+  const importStatement = `import ${capitalize(name)} from '@/pages/${capitalize(name)}/Index';\n`;
+  if (!routesContent.includes(importStatement)) {
+    routesContent = importStatement + routesContent;
+  }
+
+  const routeEntry = `                    <Route path="/${name.toLowerCase()}" element={<${capitalize(name)} />} />\n`;
+
+  routesContent = routesContent.replace(
+    /(<Route path="\/" element={<Layout\s*\/>}>\s*\n)/,
+    `$1${routeEntry}`
+  );
+
+  fs.writeFileSync(routesPath, routesContent);
+
   console.log(`✅ Carpeta '${name}' generada con éxito en src/pages/`);
+  console.log(`🧭 Ruta agregada a SidebarRoutes.js y Routes.jsx`);
 })();
+

@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { api } from "../api/axios";
+import { usePermissionsStore } from "../store/permissionsStore";
 
 const AuthContext = createContext();
 
@@ -10,6 +11,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await api.post('/api/auth/me');
       setUser(data);
+      const permsRes = await api.get(`/api/users/${data.id}/permissions`);
+      usePermissionsStore.getState().setPermissions(permsRes.data);
     } catch (error) {
       setUser(null);
     }

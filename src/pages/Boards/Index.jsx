@@ -6,6 +6,7 @@ import PaginationControls from "../../Components/PaginationControls";
 import AlertMessage from "../../Components/Alert";
 import SearchIcon from "@mui/icons-material/Search";
 import DeleteDialog from "../../Components/DeleteDialog";
+import { usePermissionsStore } from "../../store/permissionsStore";
 import { 
     Button,
     Table,
@@ -26,6 +27,7 @@ import {
  * controls and sorting capabilities for the displayed data.
  */
 export default function Boards() {
+    const hasPermission = usePermissionsStore((state) => state.hasPermission);
     const [boards, setBoards] = useState([]);
     const [board, setBoard] = useState(null);
     const [openModal, setOpenModal] = useState(false);
@@ -170,7 +172,8 @@ export default function Boards() {
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell colSpan={2} align="right">
-                                <Button variant="contained" color="primary" onClick={() => openModalForm(null, false)}>Create Board</Button>
+                                {console.log(hasPermission("board.create"))}
+                                {hasPermission("board.create") && <Button variant="contained" color="primary" onClick={() => openModalForm(null, false)}>Create Board</Button>}
                             </TableCell>
                         </TableRow>
                     </TableHead>
@@ -188,10 +191,10 @@ export default function Boards() {
                                 <TableCell align="right">{board.created_at}</TableCell>
                                 <TableCell align="right">{board.updated_at}</TableCell>
                                 <TableCell align="right">
-                                    <Button variant="contained" color="warning" onClick={() => openModalForm(board, true)}>Edit</Button>
+                                    {hasPermission("board.edit") && <Button variant="contained" color="warning" onClick={() => openModalForm(board, true)}>Edit</Button>}
                                 </TableCell>
                                 <TableCell align="right">
-                                    <Button variant="contained" color="error" onClick={() => handleOpenDelete(board)}>Delete</Button>
+                                    {hasPermission("board.delete") && <Button variant="contained" color="error" onClick={() => handleOpenDelete(board)}>Delete</Button>}
                                 </TableCell>
                             </TableRow>
                         ))}

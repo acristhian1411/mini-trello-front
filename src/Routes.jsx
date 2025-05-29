@@ -6,6 +6,7 @@ import Profile from '@/pages/User/Profile';
 import Dashboard from '@/pages/Home/Dashboard';
 import NotFound from '@/pages/Errors/NotFound';
 import Boards from '@/pages/Boards/Index';
+import BoardShow from '@/pages/Boards/Show';
 export default function AppRoutes() {
     return (
         <Router>
@@ -16,6 +17,7 @@ export default function AppRoutes() {
                     <Route index element={<Dashboard />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/boards" element={<Boards />} />
+                    <Route path="/boards/:id" element={<BoardShow />} />
                     <Route path="*" element={<NotFound />} />
                 </Route>
             </Routes>

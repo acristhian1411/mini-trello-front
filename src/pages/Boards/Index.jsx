@@ -21,6 +21,7 @@ import {
     IconButton,
     Paper,
  } from "@mui/material";
+ import { Link } from "react-router-dom";
 /**
  * A component that displays a list of boards with functionalities to 
  * create, edit, delete, and search boards. It also includes pagination 
@@ -190,6 +191,11 @@ export default function Boards() {
                                 <TableCell align="right">{board.description}</TableCell>
                                 <TableCell align="right">{board.created_at}</TableCell>
                                 <TableCell align="right">{board.updated_at}</TableCell>
+                                <TableCell align="right">
+                                    <Link to={`/boards/${board.id}`}>
+                                        <Button variant="contained" color="primary">Show</Button>
+                                    </Link>
+                                </TableCell>
                                 <TableCell align="right">
                                     {hasPermission("board.edit") && <Button variant="contained" color="warning" onClick={() => openModalForm(board, true)}>Edit</Button>}
                                 </TableCell>

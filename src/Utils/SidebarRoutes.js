@@ -10,11 +10,13 @@ export const sidebarRoutes = [
                 path: '/',
                 name: 'Dashboard',
                 icon: HomeIcon,
+                permission: ''
             },
             {
                 path: '/boards',
                 name: 'Boards',
                 icon: TableChartIcon,
+                permission: 'board.index'
             },
         ]
     },
@@ -26,6 +28,7 @@ export const sidebarRoutes = [
                 path: '/profile',
                 name: 'Profile',
                 icon: PersonIcon,
+                permission: ''
             }
         ]
     },

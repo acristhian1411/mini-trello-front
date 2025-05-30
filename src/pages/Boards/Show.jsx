@@ -16,6 +16,7 @@ import {
   import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 const Show = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [item, setItem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -55,7 +56,7 @@ const Show = () => {
       }
     
       return (
-        <Box sx={{ maxWidth: 800, mx: 'auto', mt: 4, px: 2 }}>
+        <Box sx={{ maxWidth: 900, mx: 'auto', mt: 4, px: 2 }}>
           {/* Breadcrumbs */}
           <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
             <Link component={RouterLink} to="/" underline="hover" color="inherit">

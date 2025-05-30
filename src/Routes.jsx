@@ -7,7 +7,10 @@ import Dashboard from '@/pages/Home/Dashboard';
 import NotFound from '@/pages/Errors/NotFound';
 import Boards from '@/pages/Boards/Index';
 import BoardShow from '@/pages/Boards/Show';
+import AccessDenied from '@/pages/Errors/AccessDenied';
+import { usePermissionsStore } from '@/store/permissionsStore';
 export default function AppRoutes() {
+    const hasPermission = usePermissionsStore((state) => state.hasPermission);
     return (
         <Router>
             <Routes>
@@ -16,8 +19,12 @@ export default function AppRoutes() {
                 <Route path="/" element={<Layout />}>
                     <Route index element={<Dashboard />} />
                     <Route path="/profile" element={<Profile />} />
-                    <Route path="/boards" element={<Boards />} />
-                    <Route path="/boards/:id" element={<BoardShow />} />
+                    <Route path="/boards" 
+                        element={hasPermission("board.index") ? <Boards /> : <AccessDenied />} 
+                    />
+                    <Route path="/boards/:id" 
+                        element={hasPermission("board.show") ? <BoardShow /> : <AccessDenied />} 
+                    />
                     <Route path="*" element={<NotFound />} />
                 </Route>
             </Routes>

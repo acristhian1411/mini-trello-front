@@ -14,10 +14,12 @@ import {
   import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { sidebarRoutes } from '@/Utils/SidebarRoutes';
+import { usePermissionsStore } from '@/store/permissionsStore';
 export default function Sidebar({ open, handleDrawerToggle }) {
     const drawerWidth = 240;
     const navigate = useNavigate();
     const location = useLocation();
+    const hasPermission = usePermissionsStore((state) => state.hasPermission);
     const routes = sidebarRoutes;
     const [openGroups, setOpenGroups] = useState({});
     const isRouteActive = (path) => location.pathname === path;
@@ -63,6 +65,7 @@ export default function Sidebar({ open, handleDrawerToggle }) {
           <Collapse in={openGroups[group.groupname]} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {group.routes.map((route) => (
+                route.permission == '' || hasPermission(route.permission) ?
                 <ListItemButton
                   key={route.name}
                   sx={{ pl: 4 }}
@@ -72,6 +75,7 @@ export default function Sidebar({ open, handleDrawerToggle }) {
                   <ListItemIcon>{<route.icon />}</ListItemIcon>
                   {open && <ListItemText primary={route.name} />}
                 </ListItemButton>
+                : null
               ))}
             </List>
           </Collapse>

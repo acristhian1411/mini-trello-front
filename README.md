@@ -1,12 +1,82 @@
-# React + Vite
+# Proyecto React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este es un proyecto desarrollado con React y Vite. Incluye un sistema de scaffolding para generar rápidamente páginas con archivos base como `Index.jsx`, `Form.jsx`, y `Show.jsx`.
 
-Currently, two official plugins are available:
+## 🧱 Requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Node.js](https://nodejs.org/) >= 16.x
+- [pnpm](https://pnpm.io/) recomendado (aunque también funciona con npm o yarn)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🚀 Instalación
+
+1. Cloná el repositorio:
+
+```bash
+git clone https://github.com/usuario/mi-proyecto-react.git
+cd mi-proyecto-react
+```
+
+2. Instalá las dependencias:
+
+```bash
+pnpm install
+```
+
+3. Inicia el servidor de desarrollo:
+
+```bash
+pnpm dev
+```
+
+## 🛠️ Uso del Scaffolding
+Este proyecto incluye un comando personalizado para generar carpetas de páginas con archivos base.
+
+### 📦 Crear una nueva sección con Scaffold
+
+```bash
+pnpm make NombreDeLaSeccion [--form] [--show] c=[campo1,campo2,campo3]
+```
+### 📌 Parámetros
+
+`NombreDeLaSeccion`: (obligatorio) nombre de la carpeta y componente base (se generará en src/pages/).
+
+`--form`: (opcional) crea un archivo Form.jsx con un formulario basado en los campos.
+
+`--show`: (opcional) crea un archivo Show.jsx.
+
+`--fields`: (Obigatorio) lista separada por comas de los campos a incluir en el formulario (name,description,email, etc.).
+
+### 📝 Ejemplo
+
+```bash
+pnpm make Projects --form --show c=name,description,email
+```
+
+Esto genera una carpeta src/pages/Projects con los archivos:
+
+* `Index.jsx`
+
+* `Form.jsx` (basado en los campos especificados)
+
+* `Show.jsx` (actualmente no esta generando nada)
+
+También agrega automáticamente la nueva ruta al archivo de rutas (`src/Routes.jsx`) y al menú lateral (`src/Utils/SidebarRoutes.js`).
+
+---
+
+## 🧹 Scripts disponibles
+* `pnpm dev`: inicia el servidor de desarrollo
+
+* `pnpm build`: genera una versión optimizada del proyecto
+
+* `pnpm preview`: previsualiza el build
+
+* `pnpm scaffold`: ejecuta el generador de secciones
+
+---
+
+## 📝 Licencia
+
+Este proyecto está bajo la licencia MIT. Puedes ver el archivo [LICENSE](LICENSE) para más detalles.

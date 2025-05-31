@@ -4,7 +4,7 @@ Este es un proyecto desarrollado con React y Vite. Incluye un sistema de scaffol
 
 ## 🧱 Requisitos
 
-- [Node.js](https://nodejs.org/) >= 16.x
+- [Node.js](https://nodejs.org/) >= 20.x
 - [pnpm](https://pnpm.io/) recomendado (aunque también funciona con npm o yarn)
 
 ---

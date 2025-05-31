@@ -1,21 +1,21 @@
+#!/usr/bin/env node
 export function generateFormTemplate(name, fields) {
     console.log('fields',fields)
     console.log('name',name)
-    const fileName = `${name.toLowerCase()}s`;
+    const fileName = `${name.toLowerCase()}`;
     const fieldInputs = fields
-      .map(({ name, type }) => {
-        const isMultiline = type === "textarea";
+      .map(( fieldname ) => {
+        console.log('fieldname',fieldname)
+        // const isMultiline = type === "textarea";
         return `        <TextField
-            label="${capitalize(name)}"
-            name="${name}"
-            value={formData.${name}}
+            label="${capitalize(fieldname)}"
+            name="${fieldname}"
+            value={formData.${fieldname}}
             onChange={handleChange}
-            ${isMultiline ? "multiline\n          rows={4}" : ""}
             required
           />`;
       })
       .join("\n\n");
-  
     return `import React, { useState } from "react";
   import {
     Box,
@@ -28,9 +28,7 @@ export function generateFormTemplate(name, fields) {
   
   export default function Form({onClose, edit, ${fileName}, showAlert}) {
     const [formData, setFormData] = useState({
-  ${fields
-    .map(({ name }) => `    ${name}: ${fileName}?.${name} || "",`)
-    .join("\n")}
+  ${fields.map((fieldname ) => `    ${fieldname}: ${fileName}?.${fieldname} || "",`).join("\n")}
     });
   
     const handleChange = (e) => {

@@ -1,4 +1,4 @@
-// scaffold.js
+#!/usr/bin/env node
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -223,6 +223,7 @@ export default function ${capitalize(modelName)}() {
 (async () => {
   if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir, { recursive: true });
+    console.log(`✅ Carpeta '${name}' generada con éxito en src/pages/`);
   }
 
   fs.writeFileSync(path.join(targetDir, 'Index.jsx'), generateIndexContent(name, fields));
@@ -247,6 +248,7 @@ export default function ${capitalize(modelName)}() {
                 path: '/${name.toLowerCase()}',
                 name: '${capitalize(name)}',
                 icon: TableChartIcon,
+                permission: '${name.toLowerCase()}.index'
             },\n`;
 
   sidebarContent = sidebarContent.replace(sidebarInsertRegex, (_, before, routes, after) => {
@@ -264,7 +266,7 @@ export default function ${capitalize(modelName)}() {
     routesContent = importStatement + routesContent;
   }
 
-  const routeEntry = `                    <Route path="/${name.toLowerCase()}" element={<${capitalize(name)} />} />\n`;
+  const routeEntry = `                    <Route path="/${name.toLowerCase()}" element={hasPermission("${name.toLowerCase()}.index") ? <${capitalize(name)} /> : <AccessDenied />} />\n`;
 
   routesContent = routesContent.replace(
     /(<Route path="\/" element={<Layout\s*\/>}>\s*\n)/,

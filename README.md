@@ -73,7 +73,7 @@ También agrega automáticamente la nueva ruta al archivo de rutas (`src/Routes.
 
 * `pnpm preview`: previsualiza el build
 
-* `pnpm scaffold`: ejecuta el generador de secciones
+* `pnpm make`: ejecuta el generador de secciones
 
 ---
 

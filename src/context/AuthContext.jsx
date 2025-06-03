@@ -6,6 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
   const fetchUser = async () => {
     try {
@@ -15,6 +16,9 @@ export const AuthProvider = ({ children }) => {
       usePermissionsStore.getState().setPermissions(permsRes.data);
     } catch (error) {
       setUser(null);
+    } 
+    finally {
+      setLoading(false);
     }
   };
 
@@ -41,7 +45,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

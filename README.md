@@ -4,7 +4,7 @@ Este es un proyecto desarrollado con React y Vite. Incluye un sistema de scaffol
 
 ## 🧱 Requisitos
 
-- [Node.js](https://nodejs.org/) >= 16.x
+- [Node.js](https://nodejs.org/) >= 20.x
 - [pnpm](https://pnpm.io/) recomendado (aunque también funciona con npm o yarn)
 
 ---
@@ -73,7 +73,7 @@ También agrega automáticamente la nueva ruta al archivo de rutas (`src/Routes.
 
 * `pnpm preview`: previsualiza el build
 
-* `pnpm scaffold`: ejecuta el generador de secciones
+* `pnpm make`: ejecuta el generador de secciones
 
 ---
 

@@ -24,6 +24,12 @@ export const sidebarRoutes = [
                 icon: TableChartIcon,
                 permission: 'board.index'
             },
+            {
+                path: '/logs',
+                name: 'Logs',
+                icon: TableChartIcon,
+                permission: 'logs.index'
+            }
         ]
     },
     { 

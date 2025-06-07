@@ -1,5 +1,6 @@
 import React, { lazy } from "react";
 const Lists = lazy(() => import("@/pages/Lists/Index"));
+const Logs = lazy(() => import("@/pages/Logs/Index"));
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from '@/Components/Layout';
 import Login from '@/pages/User/Login';
@@ -36,6 +37,9 @@ export default function AppRoutes() {
                     <Route path="/boards/report" element={<BoardsReport />} />
                     <Route path="/lists" 
                         element={hasPermission("board.index") ? <Lists /> : <AccessDenied />} 
+                    />
+                    <Route path="/logs" 
+                        element={hasPermission("logs.index") ? <Logs /> : <AccessDenied />} 
                     />
                     <Route path="*" element={<NotFound />} />
                 </Route>

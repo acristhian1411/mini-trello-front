@@ -12,19 +12,35 @@ export default function Form({onClose, edit, board, showAlert}) {
   const [formData, setFormData] = useState({
     name: board?.name || "",
     description: board?.description || "",
+    image: board?.image || "",
   });
 
   const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+    if(e.target.name == 'imagen'){
+      setFormData({ ...formData, image: e.target.files[0] });
+    }else{
+      setFormData((prev) => ({
+        ...prev,
+        [e.target.name]: e.target.value,
+      }));
+    }
   };
 
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post("/api/boards?wantsJson=true", formData);
+      const data = new FormData();
+      data.append('name', formData.name);
+      data.append('description', formData.description);
+      if (formData.image) {
+        data.append('image', formData.image);
+      }
+
+      const res = await api.post("/api/boards?wantsJson=true", data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       showAlert("Board creado exitosamente", "success");
     } catch (err) {
       showAlert("Error al crear board", "error");
@@ -68,6 +84,13 @@ export default function Form({onClose, edit, board, showAlert}) {
           onChange={handleChange}
           multiline
           rows={4}
+        />
+
+        <input 
+          type="file" 
+          name="imagen" 
+          accept="image/*" 
+          onChange={handleChange}
         />
 
         <Button variant="contained" color="primary" type="submit">

@@ -179,6 +179,9 @@ export default function Boards() {
                                     Updated At
                                 </TableSortLabel>
                             </TableCell>
+                            <TableCell align="center">
+                                Imagen
+                            </TableCell>
                             <TableCell colSpan={2} align="right">
                                 {hasPermission("board.create") && <Button variant="contained" color="primary" onClick={() => openModalForm(null, false)}>Create Board</Button>}
                             </TableCell>
@@ -203,6 +206,7 @@ export default function Boards() {
                                 <TableCell align="right">{board.description}</TableCell>
                                 <TableCell align="right">{board.created_at}</TableCell>
                                 <TableCell align="right">{board.updated_at}</TableCell>
+                                <TableCell align="right">{board.image_url && <img src={board.image_url} alt="board" style={{width: 50}}/>}</TableCell>
                                 <TableCell align="right">
                                     <Link to={`/boards/${board.id}`}>
                                         <Button variant="contained" color="primary">Show</Button>

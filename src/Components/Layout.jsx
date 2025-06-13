@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useMemo} from 'react';
 import {
   AppBar,
   Box,
@@ -25,16 +25,26 @@ import {
 import {Outlet} from 'react-router-dom'
 import Sidebar from './Sidebar';
 const drawerWidth = 240;
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 export default function Layout({ darkMode, toggleDarkMode, children }) {
-  const theme = useTheme();
+  // const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-
+   const theme = useMemo(
+        () =>
+          createTheme({
+            palette: {
+              mode: darkMode ? 'dark' : 'light',
+            },
+          }),
+        [darkMode]
+      );
   const handleDrawerToggle = () => {
     setOpen(!open);
   };
 
   return (
+    <ThemeProvider theme={theme}>
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
 
@@ -87,5 +97,6 @@ export default function Layout({ darkMode, toggleDarkMode, children }) {
         <Outlet/>
       </Box>
     </Box>
+    </ThemeProvider>
   );
 }

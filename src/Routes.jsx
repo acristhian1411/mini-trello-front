@@ -1,4 +1,4 @@
-import React, { lazy } from "react";
+import React, { lazy, useState, useMemo } from "react";
 const Lists = lazy(() => import("@/pages/Lists/Index"));
 const Logs = lazy(() => import("@/pages/Logs/Index"));
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -13,19 +13,27 @@ const AccessDenied = lazy(() => import("@/pages/Errors/AccessDenied"));
 import { usePermissionsStore } from '@/store/permissionsStore';
 const BoardsReport = lazy(() => import("@/pages/Boards/Reports/BoardsReport"));
 import { useAuth } from "./context/AuthContext";
+import { CssBaseline, useMediaQuery } from '@mui/material';
+
 export default function AppRoutes() {
     const hasPermission = usePermissionsStore((state) => state.hasPermission);
+    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+    const [darkMode, setDarkMode] = useState(prefersDarkMode);
+    
     const { loading } = useAuth();
     console.log(hasPermission)
     if (loading) {
         return <div>Loading...</div>;
     }
+    const toggleDarkMode = ()=>{
+        setDarkMode(!darkMode);
+    }
     return (
         <Router>
             <Routes>
-                <Route path="/login" element={<Login />} />
+                <Route path="/login" element={<Login darkMode={darkMode}  />} />
                 {/* <Route path="*" element={<NotFound />} /> */}
-                <Route path="/" element={<Layout />}>
+                <Route path="/" element={<Layout darkMode={darkMode} toggleDarkMode={toggleDarkMode}  />}>
                     <Route index element={<Dashboard />} />
                     <Route path="/profile" element={<Profile />} />
                     <Route path="/boards" 

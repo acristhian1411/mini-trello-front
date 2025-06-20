@@ -46,12 +46,12 @@ pnpm make NombreDeLaSeccion [--form] [--show] c=[campo1,campo2,campo3]
 
 `--show`: (opcional) crea un archivo Show.jsx.
 
-`--fields`: (Obigatorio) lista separada por comas de los campos a incluir en el formulario (name,description,email, etc.).
+`--c`: (Obigatorio) lista separada por comas de los campos a incluir en el formulario (name,description,email, etc.).
 
 ### 📝 Ejemplo
 
 ```bash
-pnpm make Projects --form --show c=name,description,email
+pnpm make Projects --form --show --c=[name,description,email]
 ```
 
 Esto genera una carpeta src/pages/Projects con los archivos:

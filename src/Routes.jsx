@@ -19,9 +19,7 @@ export default function AppRoutes() {
     const hasPermission = usePermissionsStore((state) => state.hasPermission);
     const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
     const [darkMode, setDarkMode] = useState(prefersDarkMode);
-    
     const { loading } = useAuth();
-    console.log(hasPermission)
     if (loading) {
         return <div>Loading...</div>;
     }

@@ -33,6 +33,7 @@ import {
  * controls and sorting capabilities for the displayed data.
  */
 export default function Boards() {
+    const API_URL = import.meta.env.VITE_BASE_URL;
     const hasPermission = usePermissionsStore((state) => state.hasPermission);
     const [boards, setBoards] = useState([]);
     const [board, setBoard] = useState(null);
@@ -109,10 +110,16 @@ export default function Boards() {
         }
     };
 
+    const goToReport = ()=>{
+        window.open(`${API_URL}/boards-report`)
+    }
+
     return (
         <div>
             <h1>Boards</h1>
-            {/* <BoardsReport boards={boards} /> */}
+            <Button variant="contained" onClick={goToReport}>
+                Ver reporte
+            </Button>
             <div sx={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px"}}>
                 <TextField
                     label="Search"

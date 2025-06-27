@@ -1,70 +1,39 @@
-import { pdf, Document, Page, Text, View, StyleSheet,Font } from '@react-pdf/renderer';
+import { useState } from 'react';
+import {api} from "../../../api/axios";
 
-Font.register({
-  family: 'BWMODELICA',
-  src:'./fonts/BWMODELICA-REGULARITALIC.ttf'
-})
+const ReportViewer = () => {
+    const [pdfUrl, setPdfUrl] = useState(null);
 
- const styles = StyleSheet.create({
-  page: { padding: 20 },
-  table: { display: 'table', width: 'auto', borderWidth: 1, borderStyle: 'solid', marginBottom: 10 },
-  row: { flexDirection: 'row' },
-  cellHeader: {
-    fontFamily:'BWMODELICA',
-    backgroundColor: '#eee',
-    fontWeight: 'bold',
-    padding: 5,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    fontSize: 10,
-    width: '20%'
-  },
-  cell: {
-    fontFamily:'BWMODELICA',
-    padding: 5,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    fontSize: 9,
-    width: '20%'
-  }
-});
+    const cargarReporte = async () => {
+        try {
+            const res = await api.get('/api/boards-report', {
+                responseType: 'blob',
+            });
 
+            const blob = new Blob([res.data], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            setPdfUrl(url);
+        } catch (error) {
+            console.error('Error al cargar el reporte:', error);
+        }
+    };
 
-const MyPDF = ({boards}) => (
-  <Document>
-    <Page size="A4">
-    <View style={styles.table}>
-        <View style={styles.row}>
-          <Text style={styles.cellHeader}>ID</Text>
-          <Text style={styles.cellHeader}>Nombre</Text>
-          <Text style={styles.cellHeader}>Descripción</Text>
-          <Text style={styles.cellHeader}>Creado</Text>
-          <Text style={styles.cellHeader}>¿Imagen?</Text>
-        </View>
+    return (
+        <div>
+          {console.log('algo')}
+            <button onClick={cargarReporte}>Cargar Reporte</button>
 
-        {/* Filas */}
-        {boards.map((item) => (
-          <View style={styles.row} key={item.id}>
-            <Text style={styles.cell}>{item.id}</Text>
-            <Text style={styles.cell}>{item.name}</Text>
-            <Text style={styles.cell}>{item.description}</Text>
-            <Text style={styles.cell}>
-              {new Date(item.created_at).toLocaleDateString()}
-            </Text>
-            <Text style={styles.cell}>{item.image_url ? 'Sí' : 'No'}</Text>
-          </View>
-        ))}
-      </View>
-    </Page>
-  </Document>
-);
-
-const generarPDF = async (boards) => {
-  const blob = await pdf(<MyPDF boards={boards} />).toBlob();
-  const url = URL.createObjectURL(blob);
-  window.open(url, '_blank'); // o descargarlo
+            {pdfUrl && (
+                <iframe
+                    src={pdfUrl}
+                    title="Reporte PDF"
+                    width="100%"
+                    height="600px"
+                    style={{ border: '1px solid #ccc', marginTop: '1rem' }}
+                />
+            )}
+        </div>
+    );
 };
 
-export default function App({boards}) {
-  return <button onClick={()=>generarPDF(boards)}>Ver PDF</button>;
-}
+export default ReportViewer;

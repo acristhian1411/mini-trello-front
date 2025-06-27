@@ -36,6 +36,7 @@ export default function Boards() {
     const API_URL = import.meta.env.VITE_BASE_URL;
     const hasPermission = usePermissionsStore((state) => state.hasPermission);
     const [boards, setBoards] = useState([]);
+    const [showReport, setShowReport] = useState(false);
     const [board, setBoard] = useState(null);
     const [openModal, setOpenModal] = useState(false);
     const [alert, setAlert] = useState(null);
@@ -64,6 +65,13 @@ export default function Boards() {
     const handleOpenDelete = (item) => {
         setBoard(item);
         setOpenDelete(true);
+    };
+
+    const openReport = () => {
+        setShowReport(true);
+    };
+    const closeReport = () => {
+        setShowReport(false);
     };
     
     const closeModal = () => {
@@ -111,7 +119,11 @@ export default function Boards() {
     };
 
     const goToReport = ()=>{
-        window.open(`${API_URL}/boards-report`)
+        api.get(`/api/boards-report`,{responseType:'blob'}).then((res)=>{
+            const blob = new Blob([res.data], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            window.open(url);
+        })
     }
 
     return (
@@ -119,6 +131,9 @@ export default function Boards() {
             <h1>Boards</h1>
             <Button variant="contained" onClick={goToReport}>
                 Ver reporte
+            </Button>
+            <Button variant="contained" onClick={openReport}>
+                Mostrar reporte
             </Button>
             <div sx={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px"}}>
                 <TextField
@@ -268,6 +283,15 @@ export default function Boards() {
                     title="Delete Board"
                     message="Are you sure you want to delete this board?"
                 />
+            </Suspense>
+            {/* Reporte */}
+            <Suspense fallback={<div>Loading...</div>}>
+                <MidModal open={showReport} onClose={() => closeReport}>
+                    <BoardsReport
+                        open={showReport}
+                        onClose={() => closeReport}
+                    />
+                </MidModal>
             </Suspense>
         </div>
     );

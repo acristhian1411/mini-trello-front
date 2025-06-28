@@ -1,4 +1,4 @@
-import React, { lazy, useState, useMemo } from "react";
+import React, { lazy, useState } from "react";
 const Lists = lazy(() => import("@/pages/Lists/Index"));
 const Logs = lazy(() => import("@/pages/Logs/Index"));
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -12,6 +12,7 @@ const BoardShow = lazy(() => import("@/pages/Boards/Show"));
 const AccessDenied = lazy(() => import("@/pages/Errors/AccessDenied"));
 import { usePermissionsStore } from '@/store/permissionsStore';
 const BoardsReport = lazy(() => import("@/pages/Boards/Reports/BoardsReport"));
+const ShowBoard = lazy(() => import("@/pages/Boards/Reports/ShowBoard"));
 import { useAuth } from "./context/AuthContext";
 import { CssBaseline, useMediaQuery } from '@mui/material';
 
@@ -39,6 +40,9 @@ export default function AppRoutes() {
                     />
                     <Route path="/boards/:id" 
                         element={hasPermission("board.show") ? <BoardShow /> : <AccessDenied />} 
+                    />
+                    <Route path="/showboard-report/:id" 
+                        element={hasPermission("board.show") ? <ShowBoard /> : <AccessDenied />} 
                     />
                     <Route path="/boards/report" element={<BoardsReport />} />
                     <Route path="/lists" 

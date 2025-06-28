@@ -229,6 +229,11 @@ export default function Boards() {
                                 <TableCell align="right">{board.created_at}</TableCell>
                                 <TableCell align="right">{board.updated_at}</TableCell>
                                 <TableCell align="right">{board.image_url && <img src={board.image_url} alt="board" style={{width: 50}}/>}</TableCell>
+                                <TableCell align="right" sx={{cursor: 'pointer'}}>
+                                    <Link to={`/showboard-report/${board.id}`}>
+                                        <Button variant="contained" color="primary">Report</Button> 
+                                    </Link>
+                                </TableCell>
                                 <TableCell align="right">
                                     <Link to={`/boards/${board.id}`}>
                                         <Button variant="contained" color="primary">Show</Button>
